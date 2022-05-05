@@ -7,6 +7,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+// Look at the docs to figure out how to implement the TalonFX (or TalonSRX, whichever we use)
+// with the Zero-to-robot code, which uses the Sparks.
+// https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-4/creating-benchtop-test-program-cpp-java.html
+// https://store.ctr-electronics.com/content/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_talon_s_r_x.html 
+// https://store.ctr-electronics.com/content/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_talon_f_x.html 
+
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,7 +28,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
+  private 
   private String m_autoSelected;
+  private DifferentialDrive m_robotDrive = new DifferentialDrive
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
@@ -74,7 +87,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+
+  }
 
   /** This function is called periodically during operator control. */
   @Override
