@@ -4,20 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-// Look at the docs to figure out how to implement the TalonFX (or TalonSRX, whichever we use)
-// with the Zero-to-robot code, which uses the Sparks.
-// https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-4/creating-benchtop-test-program-cpp-java.html
-// https://store.ctr-electronics.com/content/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_talon_s_r_x.html 
-// https://store.ctr-electronics.com/content/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_talon_f_x.html 
-
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.cameraserver.CameraServer;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.GroupMotorControllers;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,9 +28,17 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
-  private 
+  private static Timer t = new Timer();
   private String m_autoSelected;
-  private DifferentialDrive m_robotDrive = new DifferentialDrive
+  private TalonSRX m_motorRF = new TalonSRX(1);
+  private TalonSRX m_motorLB = new TalonSRX(2);
+  private TalonSRX m_motorLF = new TalonSRX(3);
+  private TalonSRX m_motorRB = new TalonSRX(4);
+  private float topSpeed = 1f;
+  private float lowSpeed = 0.2f;
+  private boolean topSpeedOn = true;
+  private Joystick jstick = new Joystick(0);
+  TalonSRXConfiguration config = new TalonSRXConfiguration();
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
@@ -39,9 +47,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    config.peakCurrentLimit = 40; // the peak current, in amps
+    config.peakCurrentDuration = 1500; // the time at the peak current before the limit triggers, in ms
+    config.continuousCurrentLimit = 30; // the current to maintain if the peak limit is triggered
+    m_motorRF.configAllSettings(config); // apply the config settings; this selects the quadrature encoder
+    m_motorRB.configAllSettings(config); // apply the config settings; this selects the quadrature encoder
+    m_motorLF.configAllSettings(config); // apply the config settings; this selects the quadrature encoder
+    m_motorLB.configAllSettings(config); // apply the config settings; this selects the quadrature encoder
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -52,7 +69,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -69,6 +88,29 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    
+    
+
+  }
+  public void setRight(float power) {
+    if(topSpeedOn) {
+      m_motorRF.set(TalonSRXControlMode.PercentOutput, -power*topSpeed); // Runs at the set power, adjusted for the speed setting
+      m_motorRB.set(TalonSRXControlMode.PercentOutput, -power*topSpeed);
+    } else {
+      m_motorRF.set(TalonSRXControlMode.PercentOutput, -power*lowSpeed); // Runs at the set power, adjusted for the speed setting
+      m_motorRB.set(TalonSRXControlMode.PercentOutput, -power*lowSpeed);
+    }
+    // m_motorRF.set(TalonSRXControlMode.PercentOutput, 0.5); // runs the motor at 50% power
+  }
+
+  public void setLeft(float power) {
+    if(topSpeedOn) {
+      m_motorLF.set(TalonSRXControlMode.PercentOutput, power*topSpeed); // runs the motor at 50% power
+      m_motorLB.set(TalonSRXControlMode.PercentOutput, power*topSpeed); // runs the motor at 50% power
+    } else {
+      m_motorLF.set(TalonSRXControlMode.PercentOutput, power*lowSpeed); // runs the motor at 50% power
+      m_motorLB.set(TalonSRXControlMode.PercentOutput, power*lowSpeed); // runs the motor at 50% power
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -87,14 +129,14 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {
-
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
-
+  public void teleopPeriodic() {
+    setRight((-(float)jstick.getY()-(float)jstick.getX())*0.5f);
+    setLeft((-(float)jstick.getY()+(float)jstick.getX())*0.5f);
+  }
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}
