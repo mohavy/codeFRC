@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.IO.BasicController;
+// import frc.robot.subsystems.IO.BasicController;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -33,6 +33,6 @@ public final class Constants {
     public static SelectedController selectedController;
 
     // Global subsystems for re-use.
-    public static BasicController controller;                               // Controller subsystem
+    // public static BasicController controller;                               // Controller subsystem
 
 }

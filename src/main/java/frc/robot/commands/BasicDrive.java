@@ -6,27 +6,20 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Drive.DriveSubsystem;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class BasicDrive extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveSubsystem m_driveSubsystem;
-  private double power, rotation;
+  private final DriveSubsystem driveSubsystem = RobotContainer.m_driveSubsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public BasicDrive(DriveSubsystem drive, double inpower, double inrotation) {
-    m_driveSubsystem = drive;
-    power = inpower;
-    rotation = inrotation;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
+  public BasicDrive() {
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +29,7 @@ public class BasicDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveSubsystem.simpleDrive(power, rotation);
+    driveSubsystem.simpleDrive();
   }
 
   // Called once the command ends or is interrupted.

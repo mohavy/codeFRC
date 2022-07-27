@@ -9,9 +9,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.BasicDrive;
-import frc.robot.subsystems.Drive.DriveSubsystem;
-import frc.robot.subsystems.IO.BasicController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,7 +20,7 @@ public class Robot extends TimedRobot {
   
   private Command m_autonomousCommand;
   private Command m_driveCommand;
-  private BasicController controller = new BasicController();
+  // private BasicController controller = new BasicController();
 
   private RobotContainer m_robotContainer;
 
@@ -36,15 +33,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    Constants.controller = controller;
     Constants.selectedDrive = Constants.SelectedDrive.BASIC_DRIVE;
     Constants.selectedController = Constants.SelectedController.ONE_XBOX;
     Constants.throttleInputPreference = Constants.ThrottleInputPreference.LEFT_Y;
     Constants.rotationInputPreference = Constants.RotationInputPreference.RIGHT_X;
     Constants.selectedAuto = Constants.SelectedAuto.BASIC_AUTO;
-    m_driveCommand = new BasicDrive(new DriveSubsystem(), controller.getVertical(), controller.getHorizontal());
-
-
   }
 
   /**
@@ -100,12 +93,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    switch(Constants.selectedDrive) {
-      case BASIC_DRIVE:
-      default:
-        break;
-    }
-
+    CommandScheduler.getInstance().run();
   }
 
   @Override

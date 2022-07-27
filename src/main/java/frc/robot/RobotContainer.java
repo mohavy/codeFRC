@@ -5,10 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import frc.robot.commands.BasicAuto;
-import frc.robot.commands.OneBallAuto;
-import frc.robot.subsystems.Drive.DriveSubsystem;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.BasicDrive;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -20,20 +19,30 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  public static final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   // Auto commands
-  private final BasicAuto m_basicAuto = new BasicAuto(m_driveSubsystem);
-  private final OneBallAuto m_oneBallAuto = new OneBallAuto(m_driveSubsystem);
 
   // Drive Commands 
-  private final BasicDrive m_basicDrive = new BasicDrive(m_driveSubsystem, Constants.controller.getVertical(), Constants.controller.getHorizontal());
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  // OI devices
+  static private Joystick joystick = new Joystick(0);
+    
+  // Return OI devices
+  static public Joystick getJoystick() {
+      return joystick;
+  }
+
+  // private final BasicDrive m_basicDrive = new BasicDrive(m_driveSubsystem, Constants.controller.getVertical(), Constants.controller.getHorizontal());
+
+  /** 
+   * The container for the robot. Contains subsystems, OI devices, and commands. 
+   * */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    m_driveSubsystem.setDefaultCommand(m_basicDrive);
+
+    m_driveSubsystem.setDefaultCommand(new BasicDrive());
   }
 
   /**
@@ -49,13 +58,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    switch(Constants.selectedAuto) {
-      case BASIC_AUTO:
-        return m_basicAuto;
-      case ONE_BALL_AUTO:
-        return m_oneBallAuto;
-      default:
-        return m_basicAuto;
-    }
+    return null;
   }
 }
